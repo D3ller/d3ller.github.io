@@ -1,0 +1,46 @@
+---
+import { Icon } from 'astro-icon/components';
+import { type CollectionEntry, getCollection, render } from 'astro:content';
+import FormattedDate from '../../components/FormattedDate.astro';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+	const projects = await getCollection('project');
+	return projects.map((project) => ({
+		params: { slug: project.id },
+		props: project,
+	}));
+}
+type Props = CollectionEntry<'project'>;
+
+const project = Astro.props;
+const { title, short_description, startedDate, github_url } = project.data;
+const { Content } = await render(project);
+---
+
+<Layout title={title} description={short_description}>
+	<a href="/" class="text-sm text-muted underline underline-offset-4 hover:text-black">cd ..</a>
+
+	<article class="mt-8">
+		<header class="mb-8">
+			<h1 class="text-xl font-semibold lowercase">{title}</h1>
+			<p class="text-sm text-muted">
+				Started <FormattedDate date={startedDate} />
+			</p>
+		</header>
+
+		<div class="prose prose-neutral prose-a:decoration-dotted prose-a:underline-offset-4 prose-a:font-normal">
+			<Content />
+		</div>
+
+		<a
+			href={github_url}
+			target="_blank"
+			rel="noopener"
+			class="mt-8 inline-flex items-center gap-1 text-sm text-muted underline underline-offset-4 hover:text-black"
+		>
+			<Icon name="mingcute:github-line" class="size-4" aria-hidden="true" />
+			View on GitHub
+		</a>
+	</article>
+</Layout>
