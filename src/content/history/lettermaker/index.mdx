@@ -1,0 +1,29 @@
+---
+title: lettermaker
+short_description: "A website that writes cover letters with AI, using GPT-4o or DeepSeek, with a dashboard to manage and track them."
+github_url: https://github.com/korastrip/letterMaker
+status: finished
+startedDate: 2025-02-10
+cover: ./landing.png
+---
+
+LetterMaker generated cover letters with AI. You filled in a form about yourself and the job, picked a model, GPT-4o or DeepSeek, and got a letter you could export as PDF, DOCX or plain text. It also had a dedicated form for Parcoursup applications.
+
+<video src="/history/lettermaker/demo.mp4" controls muted playsinline></video>
+
+## Dashboard
+
+The dashboard showed how many letters you had generated and saved, and your recent letters. You could follow each application with a status: not sent, sent, rejected, interview or hired. A usage page showed how much of your monthly quota was left.
+
+## Stack
+
+- **Nuxt 3** for both the front end and the API, with Tailwind, GSAP and SplitType for the landing page animations.
+- **OpenAI SDK** for both models, since DeepSeek exposes an OpenAI-compatible API.
+- **Prisma** on PostgreSQL, with session-based auth.
+- **Stripe** for subscriptions: each plan has a monthly letter limit, with a checkout page, a customer portal and webhooks.
+- **PostHog** for analytics, sitemap, robots and JSON-LD for SEO, and nuxt-security.
+- Cypress tests, a GitHub Actions build with Bun, and PM2 to run it in production.
+
+## An earlier version of the landing page
+
+![An earlier version of the LetterMaker landing page](./landing-early.png)

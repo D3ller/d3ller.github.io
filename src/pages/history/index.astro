@@ -1,0 +1,240 @@
+---
+import { Image } from 'astro:assets';
+import { Icon } from 'astro-icon/components';
+import { getCollection, render } from 'astro:content';
+import FormattedDate from '../../components/FormattedDate.astro';
+import Layout from '../../layouts/Layout.astro';
+
+// Unlisted page: nothing links here and it is marked noindex.
+const entries = await Promise.all(
+	(await getCollection('history', ({ data }) => import.meta.env.DEV || !data.draft))
+		.sort((a, b) => b.data.startedDate.valueOf() - a.data.startedDate.valueOf())
+		.map(async (entry) => ({ ...entry, Content: (await render(entry)).Content })),
+);
+
+// Entries are sorted newest first, so the first entry of each year starts that year's section.
+const years = [...new Set(entries.map(({ data }) => data.startedDate.getFullYear()))];
+const startsYear = (index: number) =>
+	index === 0 ||
+	entries[index - 1].data.startedDate.getFullYear() !== entries[index].data.startedDate.getFullYear();
+
+// Dot style per status: filled for finished, outlined for in progress, faded for abandoned,
+// faded and filled for declined (pitched to someone who never went ahead).
+const dot = {
+	finished: 'bg-black border-black',
+	'in progress': 'bg-white border-black',
+	abandoned: 'bg-white border-muted',
+	declined: 'bg-muted border-muted',
+};
+---
+
+<Layout title="History" description="Everything I have built, finished or not." noindex>
+	<a href="/" class="text-sm text-muted underline underline-offset-4 hover:text-black">cd ..</a>
+
+	<h1 class="text-xl font-semibold mt-8">History</h1>
+	<p class="text-sm text-muted mb-10">Everything I have built, finished or not.</p>
+
+	{years.length > 1 && (
+		<nav
+			aria-label="Years"
+			class="hidden lg:block fixed top-20 left-[calc(50%-17.5rem-7rem)] w-20"
+			data-year-nav
+		>
+			<ul class="relative space-y-1 text-sm">
+				<li class="year-indicator" aria-hidden="true" />
+				{years.map((year) => (
+					<li>
+						<a
+							href={`#year-${year}`}
+							data-year={year}
+							class="year-link inline-block text-muted hover:text-black aria-[current=true]:text-black aria-[current=true]:font-medium"
+						>
+							{year}
+						</a>
+					</li>
+				))}
+			</ul>
+		</nav>
+	)}
+
+	{entries.length > 0 ? (
+		<ol class="relative border-l border-neutral-200 ml-1" data-history>
+			{entries.map(({ id, data, Content }, index) => (
+				<li id={id} class="relative pl-8 pb-14 last:pb-0">
+					{startsYear(index) && (
+						<span
+							id={`year-${data.startedDate.getFullYear()}`}
+							data-year-start={data.startedDate.getFullYear()}
+							class="absolute top-0 scroll-mt-20"
+							aria-hidden="true"
+						/>
+					)}
+					<span
+						class:list={['absolute -left-[5px] top-1.5 size-[9px] rounded-full border', dot[data.status]]}
+						aria-hidden="true"
+					/>
+
+					<p class="text-sm text-muted">
+						<FormattedDate date={data.startedDate} /> · {data.status}{data.draft && ' · draft'}
+					</p>
+					<h2 class="font-semibold lowercase mt-1">{data.title}</h2>
+					<p class="text-sm text-muted">{data.short_description}</p>
+
+					{data.cover && (
+						<Image src={data.cover} alt="" class="mt-4 w-full rounded-lg" width={1120} />
+					)}
+
+					<div class="prose prose-neutral prose-sm mt-4 prose-a:decoration-dotted prose-a:underline-offset-4 prose-a:font-normal prose-img:rounded-lg prose-video:rounded-lg">
+						<Content />
+					</div>
+
+					{data.github_url && (
+						<a
+							href={data.github_url}
+							target="_blank"
+							rel="noopener"
+							class="mt-4 inline-flex items-center gap-1 text-sm text-muted underline underline-offset-4 hover:text-black"
+						>
+							<Icon name="mingcute:github-line" class="size-4" aria-hidden="true" />
+							View on GitHub
+						</a>
+					)}
+				</li>
+			))}
+		</ol>
+	) : (
+		<p class="text-sm text-muted">Nothing here yet.</p>
+	)}
+</Layout>
+
+<style is:global>
+	@media (prefers-reduced-motion: no-preference) {
+		html {
+			scroll-behavior: smooth;
+		}
+	}
+
+	/* Year nav: a bar slides to the current year, which shifts right a little. */
+	.year-indicator {
+		position: absolute;
+		left: -0.75rem;
+		top: 0;
+		width: 2px;
+		height: 1.25rem;
+		background: #000;
+		border-radius: 1px;
+		opacity: 0;
+		transform: translateY(var(--indicator-y, 0));
+	}
+	.year-link {
+		transition: color 200ms ease;
+	}
+	.year-link[aria-current='true'] {
+		transform: translateX(0.25rem);
+	}
+	@media (prefers-reduced-motion: no-preference) {
+		.year-indicator {
+			transition:
+				transform 350ms cubic-bezier(0.22, 1, 0.36, 1),
+				opacity 200ms ease;
+		}
+		.year-link {
+			transition:
+				color 200ms ease,
+				transform 350ms cubic-bezier(0.22, 1, 0.36, 1);
+		}
+	}
+
+	.tall-image {
+		position: relative;
+		overflow: hidden;
+	}
+	.tall-image[data-collapsed] {
+		max-height: 30rem;
+	}
+	.tall-image[data-collapsed]::after {
+		content: '';
+		position: absolute;
+		inset: auto 0 0 0;
+		height: 10rem;
+		background: linear-gradient(to top, #fff 15%, transparent);
+		pointer-events: none;
+	}
+	.tall-image > img {
+		margin-block: 0;
+	}
+</style>
+
+<script>
+	// Images taller than this get cropped behind a fade with a "View more" button.
+	const THRESHOLD = 640;
+
+	function collapse(img: HTMLImageElement) {
+		if (img.closest('.tall-image')) return;
+
+		// width/height attributes give the rendered height before a lazy image loads.
+		const w = Number(img.getAttribute('width')) || img.naturalWidth;
+		const h = Number(img.getAttribute('height')) || img.naturalHeight;
+		if (!w || !h || (img.clientWidth * h) / w <= THRESHOLD) return;
+
+		const wrapper = document.createElement('div');
+		wrapper.className = 'tall-image';
+		wrapper.dataset.collapsed = '';
+		img.replaceWith(wrapper);
+		wrapper.append(img);
+
+		const button = document.createElement('button');
+		button.type = 'button';
+		button.className = 'mt-2 text-sm text-muted underline underline-offset-4 hover:text-black';
+		button.textContent = 'View more';
+		button.setAttribute('aria-expanded', 'false');
+		wrapper.after(button);
+
+		button.addEventListener('click', () => {
+			const expanded = wrapper.toggleAttribute('data-collapsed') === false;
+			button.textContent = expanded ? 'View less' : 'View more';
+			button.setAttribute('aria-expanded', String(expanded));
+			// Collapsing a long image would leave the reader far below it.
+			if (!expanded && wrapper.getBoundingClientRect().top < 0) {
+				wrapper.scrollIntoView({ block: 'start' });
+			}
+		});
+	}
+
+	// Highlight the year whose section is at the top of the viewport.
+	const yearLinks = [...document.querySelectorAll<HTMLAnchorElement>('[data-year-nav] a')];
+	const yearStarts = [...document.querySelectorAll<HTMLElement>('[data-year-start]')];
+	let frame = 0;
+
+	function updateCurrentYear() {
+		frame = 0;
+		const line = window.innerHeight * 0.3;
+		let current = yearStarts[0]?.dataset.yearStart;
+		for (const start of yearStarts) {
+			if (start.getBoundingClientRect().top <= line) current = start.dataset.yearStart;
+		}
+		for (const link of yearLinks) {
+			const active = link.dataset.year === current;
+			link.setAttribute('aria-current', String(active));
+			if (active && indicator) {
+				indicator.style.setProperty('--indicator-y', `${link.offsetTop}px`);
+				indicator.style.height = `${link.offsetHeight}px`;
+				indicator.style.opacity = '1';
+			}
+		}
+	}
+
+	const indicator = document.querySelector<HTMLElement>('.year-indicator');
+
+	if (yearLinks.length) {
+		updateCurrentYear();
+		window.addEventListener('scroll', () => (frame ||= requestAnimationFrame(updateCurrentYear)), {
+			passive: true,
+		});
+	}
+
+	for (const img of document.querySelectorAll<HTMLImageElement>('[data-history] img')) {
+		if (img.complete || img.getAttribute('height')) collapse(img);
+		else img.addEventListener('load', () => collapse(img), { once: true });
+	}
+</script>

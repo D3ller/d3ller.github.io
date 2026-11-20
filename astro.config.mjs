@@ -13,7 +13,13 @@ import icon from 'astro-icon';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://d3ller.github.io',
-  integrations: [mdx(), sitemap(), vue(), icon()],
+  integrations: [
+    mdx(),
+    // /history is unlisted: keep it out of the sitemap.
+    sitemap({ filter: (page) => !new URL(page).pathname.startsWith('/history') }),
+    vue(),
+    icon(),
+  ],
   fonts: [
       {
           provider: fontProviders.google(),

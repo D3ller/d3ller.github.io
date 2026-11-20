@@ -26,4 +26,20 @@ const project = defineCollection({
   })
 })
 
-export const collections = { blog, project };
+const history = defineCollection({
+  loader: glob({
+    base: "./src/content/history",
+    pattern: "**/*.{md,mdx}"
+  }),
+  schema: ({ image }) => z.object({
+    title: z.string(),
+    short_description: z.string(),
+    github_url: z.url().optional(),
+    status: z.enum(["finished", "in progress", "abandoned", "declined"]),
+    startedDate: z.coerce.date(),
+    cover: image().optional(),
+    draft: z.boolean().default(false)
+  })
+})
+
+export const collections = { blog, project, history };

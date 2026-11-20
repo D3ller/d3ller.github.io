@@ -1,0 +1,11 @@
+---
+title: krak-lite
+short_description: "A lightweight, privacy-first analytics module for Nuxt: no cookies, no third party, your own endpoint."
+github_url: https://github.com/karibsen-studio/krak-lite
+status: finished
+startedDate: 2026-06-11
+---
+
+krak-lite is an analytics module for Nuxt, published on npm as [`@karibsen/krak-lite-nuxt`](https://www.npmjs.com/package/@karibsen/krak-lite-nuxt). It sends events to your own endpoint instead of a third-party service, and stores nothing on the visitor's device, so there is no consent banner to show.
+
+The session ID lives in memory only and disappears on reload. The module respects Do Not Track, strips query strings from paths, and can track page views and clicks declared with `data-krak-*` attributes. Events are batched, retried with exponential backoff, and the last batch is sent with `sendBeacon` when the page closes.

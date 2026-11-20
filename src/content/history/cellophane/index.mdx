@@ -1,0 +1,11 @@
+---
+title: cellophane
+short_description: "A tiny, type-safe state machine library for TypeScript."
+github_url: https://github.com/karibsen-labs/cellophane
+status: finished
+startedDate: 2026-09-13
+---
+
+Cellophane is a state machine library for TypeScript, published on npm as `@karibsen-labs/cellophane`. You define states and transitions once, and it infers the event names and payloads from them.
+
+Transitions can have guards, events sent during a transition are queued and run in order, delayed transitions cancel themselves when the state changes, and every transition is kept in a history. It has no dependencies.

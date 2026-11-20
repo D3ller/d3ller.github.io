@@ -1,0 +1,52 @@
+---
+title: archivecore v2
+short_description: "The second version of ArchiveCore, a Spotify-inspired web app for unreleased tracks, with auto-generated artist playlists and featurings."
+status: abandoned
+startedDate: 2023-11-22
+cover: ./artist.png
+---
+
+import { Image } from 'astro:assets';
+import artistMobile from './artist-mobile.png';
+
+The second version of ArchiveCore, before the [Electron app](#archivecore). It was a web app heavily inspired by Spotify, and it laid the groundwork for the next version.
+
+## Artists
+
+Each artist had a page with their most popular tracks and view counts, their discography, their top listeners and the tracks they were featured on. The layout also worked on mobile.
+
+<Image src={artistMobile} alt="An artist page on mobile" width={280} class="mx-auto" />
+
+When you signed up, you picked 10 artists to follow.
+
+![Choosing artists to follow during sign-up](./onboarding.png)
+
+## Generated playlists
+
+The app built playlists on its own, including one dedicated to each artist, each with its own generated cover.
+
+![A generated cover for an artist playlist](./generated-cover.png)
+
+![The Wave, a generated playlist](./playlist.png)
+
+![La Boucle, another generated playlist](./playlist-2.png)
+
+## Favorites and player
+
+You could like tracks to add them to your favorites and play them from the player bar at the bottom. The track that was playing was highlighted with a small animation.
+
+![The favorites playlist with the player bar](./favorites.png)
+
+<img src="/history/archivecore-v2/now-playing.gif" alt="The animation on the track that is playing" width="567" height="107" />
+
+## Profile and history
+
+Your profile showed your recent listening history.
+
+![A user profile with the listening history](./profile.png)
+
+## Adding tracks
+
+Tracks were added through a form with the title, the artist, the release date, the audio file and the cover.
+
+![The form to add a track](./add-song.png)

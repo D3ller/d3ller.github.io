@@ -1,0 +1,34 @@
+---
+title: archivecore v1.5
+short_description: "An earlier version of ArchiveCore with fewer features, but with community-written synced lyrics like on Spotify."
+status: abandoned
+startedDate: 2023-08-12
+cover: ./track.png
+---
+
+import { Image } from 'astro:assets';
+import mobile from './mobile.png';
+
+The version of ArchiveCore before [v2](#archivecore-v2). It had fewer features, but users could publish archives themselves, both tracks and images. Each track page had a player, likes, downloads, sharing, comments, similar tracks and a button to add it to a playlist.
+
+![The action buttons on a track](./track-actions.png)
+
+## Synced lyrics
+
+Its main feature was synced lyrics. Anyone could open the lyrics editor on a track, write the lyrics and sync them to the audio. Listeners then saw the lyrics follow the song, like on Spotify.
+
+![The prompt that invites users to write the lyrics of a track](./write-lyrics.png)
+
+## Community
+
+A leaderboard ranked users by how many archives they had published, and each profile showed that count next to the avatar.
+
+![The leaderboard of top contributors](./leaderboard.png)
+
+![A user profile with a banner and a bio](./profile.png)
+
+## Mobile
+
+The site was online at archivecore.fr and worked on mobile, with a bottom navigation bar.
+
+<Image src={mobile} alt="An image archive on mobile" width={300} class="mx-auto" />

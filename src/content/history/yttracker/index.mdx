@@ -1,0 +1,19 @@
+---
+title: yttracker
+short_description: "A tracker for the YouTube videos you watch, with listening stats like Spotify Wrapped, built with a Chrome extension, Bun, ElysiaJS and Nuxt."
+github_url: https://github.com/korastrip/ytTracker
+status: abandoned
+startedDate: 2024-11-05
+---
+
+ytTracker kept track of the YouTube videos you watched and turned them into stats, the way Spotify tells you which artists you listen to most. It showed your most-watched videos and channels for today or another period, plus your recent history.
+
+<video src="/history/yttracker/demo.mp4" controls muted playsinline></video>
+
+## How it worked
+
+1. A Chrome extension detects each video you open on YouTube and sends its ID to the API, authenticated with your token.
+2. The API, built with ElysiaJS on Bun, fetches the video's title, thumbnail and channel, then stores it in PostgreSQL through Prisma.
+3. A Nuxt front end displays the stats.
+
+I never fully finished it.

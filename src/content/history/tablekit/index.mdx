@@ -1,0 +1,12 @@
+---
+title: tablekit
+short_description: "An all-in-one SaaS for restaurants: bookings, floor plans, customer management and local SEO, built with Nuxt and AdonisJS."
+status: finished
+startedDate: 2026-03-23
+---
+
+TableKit is a SaaS for restaurants. Staff manage tables, menus, bookings and the floor plan from an admin dashboard, and customers book through a public widget. Each restaurant is its own tenant.
+
+- **Front end**: Nuxt 4 with Nuxt UI, Pinia, Tailwind, i18n and Konva for the floor plan editor.
+- **Back end**: AdonisJS 7 with Lucid, VineJS validation, Bouncer policies and live updates over Server-Sent Events.
+- **Infrastructure**: PostgreSQL with read replicas, Cloudflare R2 for files, Resend for emails, Cloudflare Turnstile against bots, Axiom for logs and PostHog for analytics.
