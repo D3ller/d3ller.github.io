@@ -18,7 +18,7 @@ const { title, short_description, startedDate, github_url } = project.data;
 const { Content } = await render(project);
 ---
 
-<Layout title={title} description={short_description}>
+<Layout title={title} description={short_description} ogImage={`/og/project/${project.id}.png`}>
 	<a href="/" class="text-sm text-muted underline underline-offset-4 hover:text-black">cd ..</a>
 
 	<article class="mt-8">

@@ -6,9 +6,10 @@ import Layout from './Layout.astro';
 type Props = CollectionEntry<'blog'>['data'];
 
 const { title, description, pubDate, updatedDate } = Astro.props;
+const ogImage = `/og/blog/${Astro.params.slug}.png`;
 ---
 
-<Layout title={title} description={description}>
+<Layout title={title} description={description} ogImage={ogImage}>
 	<a href="/" class="text-sm text-muted underline underline-offset-4 hover:text-black">cd ..</a>
 
 	<article class="mt-8">
